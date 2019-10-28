@@ -16,4 +16,11 @@ struct Position {
         self.x = x
         self.y = y
     }
+    
+    func isEqual(to position: Position) -> Bool {
+        if self.x == position.x && self.y == position.y {
+            return true
+        }
+        return false
+    }
 }

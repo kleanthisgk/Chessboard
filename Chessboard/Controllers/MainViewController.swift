@@ -48,80 +48,31 @@ class MainViewController: UIViewController {
         
         registerCustomCells()
         
-        data = initializeData()
-        possibleMoves = initializeMoves()
+        initializeData()
+        initializeMoves()
     }
     
-    func initializeData() -> [[Data]] {
-        return [[Data(name: "a8", selected: false, color: UIColor.white),
-                 Data(name: "b8", selected: false, color: UIColor.black),
-                 Data(name: "c8", selected: false, color: UIColor.white),
-                 Data(name: "d8", selected: false, color: UIColor.black),
-                 Data(name: "e8", selected: false, color: UIColor.white),
-                 Data(name: "f8", selected: false, color: UIColor.black),
-                 Data(name: "g8", selected: false, color: UIColor.white),
-                 Data(name: "h8", selected: false, color: UIColor.black)],
-                [Data(name: "a7", selected: false, color: UIColor.black),
-                 Data(name: "b7", selected: false, color: UIColor.white),
-                 Data(name: "c7", selected: false, color: UIColor.black),
-                 Data(name: "d7", selected: false, color: UIColor.white),
-                 Data(name: "e7", selected: false, color: UIColor.black),
-                 Data(name: "f7", selected: false, color: UIColor.white),
-                 Data(name: "g7", selected: false, color: UIColor.black),
-                 Data(name: "h7", selected: false, color: UIColor.white)],
-                [Data(name: "a6", selected: false, color: UIColor.white),
-                 Data(name: "b6", selected: false, color: UIColor.black),
-                 Data(name: "c6", selected: false, color: UIColor.white),
-                 Data(name: "d6", selected: false, color: UIColor.black),
-                 Data(name: "e6", selected: false, color: UIColor.white),
-                 Data(name: "f6", selected: false, color: UIColor.black),
-                 Data(name: "g6", selected: false, color: UIColor.white),
-                 Data(name: "h6", selected: false, color: UIColor.black)],
-                [Data(name: "a5", selected: false, color: UIColor.black),
-                 Data(name: "b5", selected: false, color: UIColor.white),
-                 Data(name: "c5", selected: false, color: UIColor.black),
-                 Data(name: "d5", selected: false, color: UIColor.white),
-                 Data(name: "e5", selected: false, color: UIColor.black),
-                 Data(name: "f5", selected: false, color: UIColor.white),
-                 Data(name: "g5", selected: false, color: UIColor.black),
-                 Data(name: "h5", selected: false, color: UIColor.white)],
-                [Data(name: "a4", selected: false, color: UIColor.white),
-                 Data(name: "b4", selected: false, color: UIColor.black),
-                 Data(name: "c4", selected: false, color: UIColor.white),
-                 Data(name: "d4", selected: false, color: UIColor.black),
-                 Data(name: "e4", selected: false, color: UIColor.white),
-                 Data(name: "f4", selected: false, color: UIColor.black),
-                 Data(name: "g4", selected: false, color: UIColor.white),
-                 Data(name: "h4", selected: false, color: UIColor.black)],
-                [Data(name: "a3", selected: false, color: UIColor.black),
-                 Data(name: "b3", selected: false, color: UIColor.white),
-                 Data(name: "c3", selected: false, color: UIColor.black),
-                 Data(name: "d3", selected: false, color: UIColor.white),
-                 Data(name: "e3", selected: false, color: UIColor.black),
-                 Data(name: "f3", selected: false, color: UIColor.white),
-                 Data(name: "g3", selected: false, color: UIColor.black),
-                 Data(name: "h3", selected: false, color: UIColor.white)],
-                [Data(name: "a2", selected: false, color: UIColor.white),
-                 Data(name: "b2", selected: false, color: UIColor.black),
-                 Data(name: "c2", selected: false, color: UIColor.white),
-                 Data(name: "d2", selected: false, color: UIColor.black),
-                 Data(name: "e2", selected: false, color: UIColor.white),
-                 Data(name: "f2", selected: false, color: UIColor.black),
-                 Data(name: "g2", selected: false, color: UIColor.white),
-                 Data(name: "h2", selected: false, color: UIColor.black)],
-                [Data(name: "a1", selected: false, color: UIColor.black),
-                 Data(name: "b1", selected: false, color: UIColor.white),
-                 Data(name: "c1", selected: false, color: UIColor.black),
-                 Data(name: "d1", selected: false, color: UIColor.white),
-                 Data(name: "e1", selected: false, color: UIColor.black),
-                 Data(name: "f1", selected: false, color: UIColor.white),
-                 Data(name: "g1", selected: false, color: UIColor.black),
-                 Data(name: "h1", selected: false, color: UIColor.white)],
-        ]
+    func initializeData() {
+        let firstLetter = Int(("a" as UnicodeScalar).value)
+        var color = UIColor.white
+        for i in 0 ..< boardSize {
+            var d: [Data] = []
+            for j in 0 ..< boardSize {
+                guard let c = UnicodeScalar(j + firstLetter) else {
+                    return
+                }
+                d.append(Data(name: "\(Character(c))\(boardSize - i)", color: color))
+                color = changeTileColor(color: color)
+            }
+            data.append(d)
+            if boardSize % 2 == 0 {
+                color = changeTileColor(color: color)
+            }
+        }
     }
     
-    func initializeMoves() -> [Position] {
-        return [Position(x: -2, y: -1),
+    func initializeMoves() {
+        possibleMoves = [Position(x: -2, y: -1),
                 Position(x: -2, y:  1),
                 Position(x: -1, y: -2),
                 Position(x: -1, y:  2),
@@ -130,6 +81,17 @@ class MainViewController: UIViewController {
                 Position(x:  2, y: -1),
                 Position(x:  2, y:  1),
         ]
+    }
+    
+    func changeTileColor(color: UIColor) -> UIColor {
+        var newColor = UIColor.clear
+        if color == UIColor.black {
+            newColor = UIColor.white
+        }
+        else if color == UIColor.white{
+            newColor = UIColor.black
+        }
+        return newColor
     }
     
     func setUpText() {
@@ -170,15 +132,15 @@ class MainViewController: UIViewController {
             }
             for move2 in possibleMoves {
                 secondMove = nextMove(prev: firstMove, move: move2)
-                if !isMoveValid(position: secondMove) || areEqual(first: secondMove, second: start) {
+                if !isMoveValid(position: secondMove) || secondMove.isEqual(to: start) {
                     continue
                 }
                 for move3 in possibleMoves {
                     thirdMove = nextMove(prev: secondMove, move: move3)
-                    if !isMoveValid(position: thirdMove) || areEqual(first: thirdMove, second: firstMove){
+                    if !isMoveValid(position: thirdMove) || thirdMove.isEqual(to: firstMove) {
                         continue
                     }
-                    if areEqual(first: thirdMove, second: end) {
+                    if thirdMove.isEqual(to: end) {
                         success = true
                         guard let begin = data[start.x][start.y].name,
                             let first = data[firstMove.x][firstMove.y].name,
@@ -187,13 +149,12 @@ class MainViewController: UIViewController {
                             else {
                                 return
                         }
-                        results.append("\(begin) ~> \(first) ~> \(second) ~> \(third)")
+                        results.append("\(begin) -> \(first) -> \(second) -> \(third)")
                     }
                 }
             }
         }
         if success {
-            print(results)
             resultsTableView.reloadData()
             resultsTableView.isHidden = false
         }
@@ -230,13 +191,6 @@ class MainViewController: UIViewController {
         return false
     }
     
-    func areEqual(first: Position, second: Position) -> Bool {
-        if first.x == second.x && first.y == second.y {
-            return true
-        }
-        return false
-    }
-    
     func reset() {
         isStartingPositionSelected = false
         isEndingPositionSelected = false
@@ -256,7 +210,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return boardSize
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell{
         let d = data[indexPath.section][indexPath.row]
         let chessCell = chessboardCollectionView.dequeueReusableCell(withReuseIdentifier: "tileCell", for: indexPath)
             as! TileCollectionViewCell
